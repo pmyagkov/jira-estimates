@@ -89,14 +89,23 @@ function calculateSection (sectionNode) {
 }
 
 function getSectionPrintArgs (sectionName, issues) {
+    if (!issues.length) {
+        return {
+            value: `%c[0h]%c ${ sectionName }: ${ issues.length } issues`,
+            colors: [Issue.normalColor, Issue.textColor],
+        }    
+    }
+
     const sectionInfo = issues.reduce(
         (result, issue) => Object.assign({}, result, {
             remainingEstimate: (result.remainingEstimate || 0) + issue.getNumberEstimate('remaining'),
             originalEstimate: (result.originalEstimate || 0) + issue.getNumberEstimate('original'),
             unestimatedCount: (result.unestimatedCount || 0) + Number(issue.isUnestimated()),
             overEstimatedCount: (result.overEstimatedCount || 0) + Number(issue.isOverEstimated()),
-        }, {})
+        }), 
+        {}
     )
+    
 
     const { remainingEstimate, originalEstimate, unestimatedCount, overEstimatedCount } = sectionInfo
 
